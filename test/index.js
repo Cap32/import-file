@@ -16,6 +16,11 @@ describe('importFile()', () => {
 		assert.equal(result, 'works');
 	});
 
+	it('without extname', () => {
+		const result = importFile('.configrc', options);
+		assert.equal(result, 'works');
+	});
+
 	it('with extname', () => {
 		const result = importFile('yaml.yaml', options).yaml;
 		assert.equal(result, 'works');

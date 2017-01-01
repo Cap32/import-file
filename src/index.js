@@ -30,6 +30,7 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 			paths.push(filepath);
 		}
 		else {
+			paths.push(filepath);
 			exts.forEach((ext) => {
 				paths.push(filepath + ext);
 			});
@@ -60,7 +61,8 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 const importFile = function importFile(filepath, options = {}) {
 	const { useLoader = true } = options;
 	const finalPath = resolveFile(filepath, options);
-	useLoader && rechoir.prepare(extensions, finalPath);
+	try { useLoader && rechoir.prepare(extensions, finalPath); }
+	catch (err) { /* noop */ }
 	return require(finalPath);
 };
 
