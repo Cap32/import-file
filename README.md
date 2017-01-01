@@ -24,8 +24,7 @@ export default {
 ###### /project/src/index.js
 
 ```js
-import importFile from 'import-file';
-
+const importFile = require('import-file');
 const config = importFile('my_config.babel.js');
 console.log(config.name);
 ```
@@ -49,11 +48,10 @@ Import a file as a node module. Return a node module if the file exists, otherwi
     - `useLoader` (Boolean): Enable automatically register module loader according to the adding extension name. Defaults to `true`
     - `useFindUp` (Boolean): Find by walking up parent directories. Defaults to `true`
 
----
 
 #### importFile.resolve(filepath[, options])
 
-All arguments and usage is the same with `importFile()`, but just return the resolved filename. Throw an error if the file is not exists.
+The same with `importFile()`, but just return the resolved filename. Throw an error if the file is not exists.
 
 ## Installing
 
