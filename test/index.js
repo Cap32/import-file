@@ -2,10 +2,13 @@
 import importFile from '../src';
 import assert from 'assert';
 import { join, basename } from 'path';
+import { writeFileSync, unlinkSync } from 'fs';
 
 const options = { cwd: __dirname };
+const random = () => Math.random().toString(36).slice(2);
 
 describe('importFile()', () => {
+
 	it('.js', () => {
 		const result = importFile('javascript', options);
 		assert.equal(result, 'works');
@@ -40,6 +43,43 @@ describe('importFile()', () => {
 				useFindUp: false,
 			});
 		});
+	});
+
+	it('with `cache`', () => {
+		const name = `${random()}.json`;
+		const content = 'cache';
+		const updated = 'update';
+		const tmpFilename = join(__dirname, name);
+		const write = (filename, data) =>
+			writeFileSync(filename, JSON.stringify(data), 'utf-8')
+		;
+		write(tmpFilename, content);
+		const result = importFile(name, options);
+		write(tmpFilename, updated);
+		const cachedResult = importFile(name, options);
+		unlinkSync(tmpFilename);
+		assert.equal(result, content);
+		assert.equal(cachedResult, content);
+	});
+
+	it('without `cache`', () => {
+		const name = `${random()}.json`;
+		const content = 'cache';
+		const updated = 'update';
+		const tmpFilename = join(__dirname, name);
+		const write = (filename, data) =>
+			writeFileSync(filename, JSON.stringify(data), 'utf-8')
+		;
+		write(tmpFilename, content);
+		const result = importFile(name, options);
+		write(tmpFilename, updated);
+		const cachedResult = importFile(name, {
+			...options,
+			useCache: false,
+		});
+		unlinkSync(tmpFilename);
+		assert.equal(result, content);
+		assert.notEqual(cachedResult, content);
 	});
 });
 

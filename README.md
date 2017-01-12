@@ -47,6 +47,7 @@ Import a file as a node module. Return a node module if the file exists, otherwi
     - `cwd` (String): The directory resolves from. Defaults to `process.cwd()`
     - `useLoader` (Boolean): Enable automatically register module loader according to the adding extension name. Defaults to `true`
     - `useFindUp` (Boolean): Find by walking up parent directories. Defaults to `true`
+    - `useCache` (Boolean): Cache imported file. The same behaviour with node.js `require`. Default to `true`.
 
 
 #### importFile.resolve(filepath[, options])

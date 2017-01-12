@@ -4,7 +4,9 @@ import rechoir from 'rechoir';
 import findUp from 'find-up';
 import { resolve } from 'path';
 import { existsSync } from 'fs';
+import requireReload from 'require-reload';
 
+const reload = requireReload(require);
 const { extensions } = interpret;
 
 const resolveFile = function resolveFile(filepath, options = {}) {
@@ -59,11 +61,14 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 };
 
 const importFile = function importFile(filepath, options = {}) {
-	const { useLoader = true } = options;
+	const {
+		useLoader = true,
+		useCache = true,
+	} = options;
 	const finalPath = resolveFile(filepath, options);
 	try { useLoader && rechoir.prepare(extensions, finalPath); }
 	catch (err) { /* noop */ }
-	return require(finalPath);
+	return useCache ? require(finalPath) : reload(finalPath);
 };
 
 importFile.resolve = resolveFile;
