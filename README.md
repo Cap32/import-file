@@ -51,6 +51,8 @@ Import a file as a node module. Return a node module if the file exists, otherwi
     - `useFindUp` (Boolean): Find by walking up parent directories. Defaults to `true`
     - `useCache` (Boolean): Cache imported file. The same behaviour with node.js `require`. Default to `true`.
     - `useESDefault` (Boolean): Export `default` in ES module. Default to `true`.
+    - `resolvers` ([String]): Tell `importFile` what directories should be searched when resolving files
+    - `exts` ([String]): Extensions white list for loader. Only work it `useLoader` is `true`. Defaults to all [interpret](https://github.com/js-cli/js-interpret#extensions) extensions
 
 
 #### importFile.resolve(filepath[, options])

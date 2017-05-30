@@ -83,11 +83,23 @@ describe('importFile()', () => {
 	});
 
 	it('with `useESDefault`', () => {
-		const result = importFile('es', {
-			...options,
-			useESDefault: true,
-		});
+		const result = importFile('es', options);
 		assert.equal(result, 'works');
+	});
+
+	it('with `resolvers`', () => {
+		const result = importFile('javascript', {
+			...options,
+			resolvers: ['other'],
+		});
+		assert.equal(result, 'works, too');
+	});
+
+	it('with `exts`', () => {
+		assert.throws(() => importFile('javascript', {
+			...options,
+			exts: ['.json'], // there is no `javascript.json`, so throws error.
+		}));
 	});
 
 });

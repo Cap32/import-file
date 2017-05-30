@@ -1,17 +1,26 @@
 {
   "name": "import-file",
   "version": "1.1.0",
-  "description": "import file",
+  "description": "Import the closest file with loader",
   "scripts": {
     "start": "npm test -- -w",
     "test": "mocha --require=babel-register test",
     "prebuild": "rimraf lib",
     "build": "babel src -d lib",
-    "prepublish": "npm test && npm run build"
+    "preversion": "npm test && npm run build"
   },
   "main": "lib/index.js",
   "repository": "https://github.com/Cap32/import-file.git",
   "author": "Cap32 <webb.png@gmail.com>",
+  "keywords": [
+    "import",
+    "require",
+    "interpret",
+    "cli",
+    "walk",
+    "config",
+    "resolve"
+  ],
   "license": "MIT",
   "dependencies": {
     "find-up": "^2.1.0",

@@ -14,18 +14,24 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 		cwd = process.cwd(),
 		useLoader = true,
 		useFindUp = true,
+		resolvers = [],
+		exts = [],
 	} = options;
 
 	const paths = [];
 
 	if (useLoader) {
-		const exts = Object.keys(extensions).sort((a, b) =>
-			a === '.js' ? -1 : b === '.js' ? 1 : a.length - b.length
-		);
+		const sortedExts = Object
+			.keys(extensions)
+			.filter((ext) => !exts.length || exts.indexOf(ext) > -1)
+			.sort((a, b) =>
+				a === '.js' ? -1 : b === '.js' ? 1 : a.length - b.length
+			)
+		;
 
 		const hasDot = filepath.includes('.');
 		const includesExt = () =>
-			exts.reverse().some((ext) => filepath.endsWith(ext))
+			sortedExts.reverse().some((ext) => filepath.endsWith(ext))
 		;
 
 		if (hasDot && includesExt()) {
@@ -33,7 +39,7 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 		}
 		else {
 			paths.push(filepath);
-			exts.forEach((ext) => {
+			sortedExts.forEach((ext) => {
 				paths.push(filepath + ext);
 			});
 		}
@@ -42,13 +48,19 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 		paths.push(filepath);
 	}
 
-	let finalPath;
+	const resolverDirs = resolvers.concat('.');
+	const fullPaths = [];
 
-	if (useFindUp) {
+	resolverDirs.forEach((dir) => {
+		paths.forEach((path) => {
+			fullPaths.push(resolve(cwd, dir, path));
+		});
+	});
+
+	let finalPath = fullPaths.find(existsSync);
+
+	if (!finalPath && useFindUp) {
 		finalPath = findUp.sync(paths, { cwd });
-	}
-	else {
-		finalPath = paths.map((path) => resolve(cwd, path)).find(existsSync);
 	}
 
 	if (!finalPath) {
