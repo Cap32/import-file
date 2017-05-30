@@ -64,11 +64,14 @@ const importFile = function importFile(filepath, options = {}) {
 	const {
 		useLoader = true,
 		useCache = true,
+		useESDefault = true,
 	} = options;
 	const finalPath = resolveFile(filepath, options);
 	try { useLoader && rechoir.prepare(extensions, finalPath); }
 	catch (err) { /* noop */ }
-	return useCache ? require(finalPath) : reload(finalPath);
+	const module = useCache ? require(finalPath) : reload(finalPath);
+	const shouldUseDefault = useESDefault && module.__esModule && module.default;
+	return shouldUseDefault ? module.default : module;
 };
 
 importFile.resolve = resolveFile;

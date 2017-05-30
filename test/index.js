@@ -45,7 +45,7 @@ describe('importFile()', () => {
 		});
 	});
 
-	it('with `cache`', () => {
+	it('with `useCache`', () => {
 		const name = `${random()}.json`;
 		const content = 'cache';
 		const updated = 'update';
@@ -62,7 +62,7 @@ describe('importFile()', () => {
 		assert.equal(cachedResult, content);
 	});
 
-	it('without `cache`', () => {
+	it('without `useCache`', () => {
 		const name = `${random()}.json`;
 		const content = 'cache';
 		const updated = 'update';
@@ -81,6 +81,15 @@ describe('importFile()', () => {
 		assert.equal(result, content);
 		assert.notEqual(cachedResult, content);
 	});
+
+	it('with `useESDefault`', () => {
+		const result = importFile('es', {
+			...options,
+			useESDefault: true,
+		});
+		assert.equal(result, 'works');
+	});
+
 });
 
 describe('importFile.resolve()', () => {
