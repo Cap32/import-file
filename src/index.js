@@ -3,11 +3,15 @@ import interpret from 'interpret';
 import rechoir from 'rechoir';
 import findUp from 'find-up';
 import { resolve } from 'path';
-import { existsSync } from 'fs';
 import requireReload from 'require-reload';
 
 const reload = requireReload(require);
 const { extensions } = interpret;
+
+const existsSync = (path) => {
+	try { return !!require.resolve(path); }
+	catch (err) { return false; }
+};
 
 const resolveFile = function resolveFile(filepath, options = {}) {
 	const {

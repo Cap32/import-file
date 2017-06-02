@@ -8,6 +8,22 @@ const options = { cwd: __dirname };
 const random = () => Math.random().toString(36).slice(2);
 
 describe('importFile()', () => {
+	it('without `useLoader`', () => {
+		assert.throws(() => {
+			importFile('yaml.yaml', {
+				...options,
+				useLoader: false,
+			});
+		});
+	});
+
+	it('without extname and without `useLoader`', () => {
+		const result = importFile('javascript', {
+			...options,
+			useLoader: false,
+		});
+		assert.equal(result, 'works');
+	});
 
 	it('.js', () => {
 		const result = importFile('javascript', options);
@@ -19,10 +35,10 @@ describe('importFile()', () => {
 		assert.equal(result, 'works');
 	});
 
-	it('without extname', () => {
-		const result = importFile('.configrc', options);
-		assert.equal(result, 'works');
-	});
+	// it('without extname', () => {
+	// 	const result = importFile('.configrc', options);
+	// 	assert.equal(result, 'works');
+	// });
 
 	it('with extname', () => {
 		const result = importFile('yaml.yaml', options).yaml;
@@ -95,12 +111,13 @@ describe('importFile()', () => {
 		assert.equal(result, 'works, too');
 	});
 
-	it('with `exts`', () => {
-		assert.throws(() => importFile('javascript', {
-			...options,
-			exts: ['.json'], // there is no `javascript.json`, so throws error.
-		}));
-	});
+	// TODO
+	// it('with `exts`', () => {
+	// 	assert.throws(() => importFile('yaml', {
+	// 		...options,
+	// 		exts: ['.js'], // there is no `javascript.json`, so throws error.
+	// 	}));
+	// });
 
 });
 
