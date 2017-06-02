@@ -3,27 +3,13 @@ import importFile from '../src';
 import assert from 'assert';
 import { join, basename } from 'path';
 import { writeFileSync, unlinkSync } from 'fs';
+import { cleanup } from './utils';
 
 const options = { cwd: __dirname };
 const random = () => Math.random().toString(36).slice(2);
 
 describe('importFile()', () => {
-	it('without `useLoader`', () => {
-		assert.throws(() => {
-			importFile('yaml.yaml', {
-				...options,
-				useLoader: false,
-			});
-		});
-	});
-
-	it('without extname and without `useLoader`', () => {
-		const result = importFile('javascript', {
-			...options,
-			useLoader: false,
-		});
-		assert.equal(result, 'works');
-	});
+	afterEach(cleanup);
 
 	it('.js', () => {
 		const result = importFile('javascript', options);
@@ -34,11 +20,6 @@ describe('importFile()', () => {
 		const result = importFile('yaml', options).yaml;
 		assert.equal(result, 'works');
 	});
-
-	// it('without extname', () => {
-	// 	const result = importFile('.configrc', options);
-	// 	assert.equal(result, 'works');
-	// });
 
 	it('with extname', () => {
 		const result = importFile('yaml.yaml', options).yaml;
@@ -61,6 +42,15 @@ describe('importFile()', () => {
 		});
 	});
 
+	it('without `useLoader`', () => {
+		assert.throws(() => {
+			importFile('yaml.yaml', {
+				...options,
+				useLoader: false,
+			});
+		});
+	});
+
 	it('with `useCache`', () => {
 		const name = `${random()}.json`;
 		const content = 'cache';
@@ -76,6 +66,19 @@ describe('importFile()', () => {
 		unlinkSync(tmpFilename);
 		assert.equal(result, content);
 		assert.equal(cachedResult, content);
+	});
+
+	it('with `useESDefault`', () => {
+		const result = importFile('es', options);
+		assert.equal(result, 'works');
+	});
+
+	it('with `resolvers`', () => {
+		const result = importFile('javascript', {
+			...options,
+			resolvers: ['other'],
+		});
+		assert.equal(result, 'works, too');
 	});
 
 	it('without `useCache`', () => {
@@ -98,26 +101,20 @@ describe('importFile()', () => {
 		assert.notEqual(cachedResult, content);
 	});
 
-	it('with `useESDefault`', () => {
-		const result = importFile('es', options);
+	it('without extname and without `useLoader`', () => {
+		const result = importFile('javascript', {
+			...options,
+			useLoader: false,
+		});
 		assert.equal(result, 'works');
 	});
 
-	it('with `resolvers`', () => {
-		const result = importFile('javascript', {
+	it('with `exts`', () => {
+		assert.throws(() => importFile('yaml', {
 			...options,
-			resolvers: ['other'],
-		});
-		assert.equal(result, 'works, too');
+			exts: ['.js'], // there is no `yaml.js`, so throws error.
+		}));
 	});
-
-	// TODO
-	// it('with `exts`', () => {
-	// 	assert.throws(() => importFile('yaml', {
-	// 		...options,
-	// 		exts: ['.js'], // there is no `javascript.json`, so throws error.
-	// 	}));
-	// });
 
 });
 
