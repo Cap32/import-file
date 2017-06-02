@@ -11,6 +11,11 @@ const random = () => Math.random().toString(36).slice(2);
 describe('importFile()', () => {
 	afterEach(cleanup);
 
+	it('import from `node_modules`', () => {
+		const rimraf = importFile('rimraf'); // from `node_modules`
+		assert(typeof rimraf === 'function');
+	})
+
 	it('.js', () => {
 		const result = importFile('javascript', options);
 		assert.equal(result, 'works');

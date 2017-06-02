@@ -8,12 +8,15 @@ import requireReload from 'require-reload';
 const reload = requireReload(require);
 const { extensions } = interpret;
 
-const existsSync = (path) => {
-	try { return !!require.resolve(path); }
+const requireResolve = (path) => {
+	try { return require.resolve(path); }
 	catch (err) { return false; }
 };
 
 const resolveFile = function resolveFile(filepath, options = {}) {
+	const resolved = requireResolve(filepath);
+	if (resolved) { return resolved; }
+
 	const {
 		cwd = process.cwd(),
 		useLoader = true,
@@ -61,7 +64,7 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 		});
 	});
 
-	let finalPath = fullPaths.find(existsSync);
+	let finalPath = fullPaths.find(requireResolve);
 
 	if (!finalPath && useFindUp) {
 		finalPath = findUp.sync(paths, { cwd });
