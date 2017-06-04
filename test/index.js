@@ -14,7 +14,7 @@ describe('importFile()', () => {
 	it('import from `node_modules`', () => {
 		const rimraf = importFile('rimraf'); // from `node_modules`
 		assert(typeof rimraf === 'function');
-	})
+	});
 
 	it('.js', () => {
 		const result = importFile('javascript', options);
