@@ -8,15 +8,7 @@ import requireReload from 'require-reload';
 const reload = requireReload(require);
 const { extensions } = interpret;
 
-const requireResolve = (path) => {
-	try { return require.resolve(path); }
-	catch (err) { return false; }
-};
-
 const resolveFile = function resolveFile(filepath, options = {}) {
-	const resolved = requireResolve(filepath);
-	if (resolved) { return resolved; }
-
 	const {
 		cwd = process.cwd(),
 		useLoader = true,
@@ -24,6 +16,20 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 		resolvers = [],
 		exts = [],
 	} = options;
+
+	const resolverPaths = resolvers.map((path) => resolve(cwd, path));
+	if (resolverPaths.every((path) => path !== cwd)) {
+		resolverPaths.push(cwd);
+	}
+
+	const requireResolve = (path) => {
+		try { return require.resolve(path, { paths: resolverPaths }); }
+		catch (err) { return false; }
+	};
+
+	const resolved = requireResolve(filepath);
+
+	if (resolved) { return resolved; }
 
 	const paths = [];
 
@@ -55,10 +61,8 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 		paths.push(filepath);
 	}
 
-	const resolverDirs = resolvers.concat('.');
 	const fullPaths = [];
-
-	resolverDirs.forEach((dir) => {
+	resolverPaths.forEach((dir) => {
 		paths.forEach((path) => {
 			fullPaths.push(resolve(cwd, dir, path));
 		});

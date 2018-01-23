@@ -121,6 +121,13 @@ describe('importFile()', () => {
 		}));
 	});
 
+	it('index.js', () => {
+		const result = importFile('index', {
+			cwd: join(__dirname, 'other'),
+		});
+		assert.equal(result, 'works');
+	});
+
 });
 
 describe('importFile.resolve()', () => {
