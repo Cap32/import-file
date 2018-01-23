@@ -1,6 +1,6 @@
 {
   "name": "import-file",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Import the closest file with loader",
   "scripts": {
     "start": "npm test -- -w",
