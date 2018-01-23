@@ -79,7 +79,7 @@ describe('importFile()', () => {
 	});
 
 	it('with `resolvers`', () => {
-		const result = importFile('javascript', {
+		const result = importFile('resolvers', {
 			...options,
 			resolvers: ['other'],
 		});

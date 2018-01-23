@@ -17,10 +17,8 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 		exts = [],
 	} = options;
 
-	const resolverPaths = resolvers.map((path) => resolve(cwd, path));
-	if (resolverPaths.every((path) => path !== cwd)) {
-		resolverPaths.push(cwd);
-	}
+	const uniqueResolvers = Array.from(new Set([cwd, ...resolvers]));
+	const resolverPaths = uniqueResolvers.map((path) => resolve(cwd, path));
 
 	const requireResolve = (path) => {
 		try { return require.resolve(path, { paths: resolverPaths }); }
