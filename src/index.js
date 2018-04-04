@@ -2,7 +2,7 @@
 import interpret from 'interpret';
 import rechoir from 'rechoir';
 import findUp from 'find-up';
-import { resolve } from 'path';
+import { resolve, extname } from 'path';
 import requireReload from 'require-reload';
 
 const reload = requireReload(require);
@@ -40,12 +40,12 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 			)
 		;
 
-		const hasDot = filepath.includes('.');
+		const fileExt = extname(filepath);
 		const includesExt = () =>
 			sortedExts.reverse().some((ext) => filepath.endsWith(ext))
 		;
 
-		if (hasDot && includesExt()) {
+		if (fileExt && includesExt()) {
 			paths.push(filepath);
 		}
 		else {
