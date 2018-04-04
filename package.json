@@ -1,7 +1,7 @@
 {
   "name": "import-file",
   "version": "1.2.4",
-  "description": "Import the closest file with loader",
+  "description": "import the closest file as a node module with loader",
   "scripts": {
     "start": "npm test -- -w",
     "test": "mocha --require=babel-register test",

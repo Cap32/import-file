@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Cap32/import-file.svg?branch=master)](https://travis-ci.org/Cap32/import-file)
 
-  Import the closest file with loader.
+  Import the closest file as a node module with loader.
 
 ## What is it
 
