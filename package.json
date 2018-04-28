@@ -24,7 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "find-up": "^2.1.0",
-    "interpret": "^1.0.1",
+    "interpret": "^1.1.0",
     "rechoir": "^0.6.2",
     "require-reload": "^0.2.2"
   },
