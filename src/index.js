@@ -73,8 +73,10 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 	}
 
 	if (!finalPath) {
-		const error = new Error(`File "${filepath}" NOT found.`);
+		const error = new Error(`Module "${filepath}" NOT found.`);
 		error.errno = 'ENOENT';
+		error.cwd = cwd;
+		error.paths = fullPaths;
 		throw error;
 	}
 
