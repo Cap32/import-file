@@ -1,4 +1,3 @@
-
 import importFile from '../src';
 import assert from 'assert';
 import { join, basename } from 'path';
@@ -6,7 +5,10 @@ import { writeFileSync, unlinkSync } from 'fs';
 import { cleanup } from './utils';
 
 const options = { cwd: __dirname };
-const random = () => Math.random().toString(36).slice(2);
+const random = () =>
+	Math.random()
+		.toString(36)
+		.slice(2);
 
 describe('importFile()', () => {
 	afterEach(cleanup);
@@ -18,24 +20,24 @@ describe('importFile()', () => {
 
 	it('.js', () => {
 		const result = importFile('javascript', options);
-		assert.equal(result, 'works');
+		assert.strictEqual(result, 'works');
 	});
 
 	it('.yaml', () => {
 		const result = importFile('yaml', options).yaml;
-		assert.equal(result, 'works');
+		assert.strictEqual(result, 'works');
 	});
 
 	it('with extname', () => {
 		const result = importFile('yaml.yaml', options).yaml;
-		assert.equal(result, 'works');
+		assert.strictEqual(result, 'works');
 	});
 
 	it('with `useFindUp`', () => {
 		const result = importFile('javascript', {
 			cwd: join(__dirname, 'fake', 'dir'),
 		});
-		assert.equal(result, 'works');
+		assert.strictEqual(result, 'works');
 	});
 
 	it('without `useFindUp`', () => {
@@ -62,20 +64,19 @@ describe('importFile()', () => {
 		const updated = 'update';
 		const tmpFilename = join(__dirname, name);
 		const write = (filename, data) =>
-			writeFileSync(filename, JSON.stringify(data), 'utf-8')
-		;
+			writeFileSync(filename, JSON.stringify(data), 'utf-8');
 		write(tmpFilename, content);
 		const result = importFile(name, options);
 		write(tmpFilename, updated);
 		const cachedResult = importFile(name, options);
 		unlinkSync(tmpFilename);
-		assert.equal(result, content);
-		assert.equal(cachedResult, content);
+		assert.strictEqual(result, content);
+		assert.strictEqual(cachedResult, content);
 	});
 
 	it('with `useESDefault`', () => {
 		const result = importFile('es', options);
-		assert.equal(result, 'works');
+		assert.strictEqual(result, 'works');
 	});
 
 	it('with `resolvers`', () => {
@@ -83,7 +84,7 @@ describe('importFile()', () => {
 			...options,
 			resolvers: ['other'],
 		});
-		assert.equal(result, 'works, too');
+		assert.strictEqual(result, 'works, too');
 	});
 
 	it('without `useCache`', () => {
@@ -92,8 +93,7 @@ describe('importFile()', () => {
 		const updated = 'update';
 		const tmpFilename = join(__dirname, name);
 		const write = (filename, data) =>
-			writeFileSync(filename, JSON.stringify(data), 'utf-8')
-		;
+			writeFileSync(filename, JSON.stringify(data), 'utf-8');
 		write(tmpFilename, content);
 		const result = importFile(name, options);
 		write(tmpFilename, updated);
@@ -102,8 +102,8 @@ describe('importFile()', () => {
 			useCache: false,
 		});
 		unlinkSync(tmpFilename);
-		assert.equal(result, content);
-		assert.notEqual(cachedResult, content);
+		assert.strictEqual(result, content);
+		assert.notStrictEqual(cachedResult, content);
 	});
 
 	it('without extname and without `useLoader`', () => {
@@ -111,29 +111,30 @@ describe('importFile()', () => {
 			...options,
 			useLoader: false,
 		});
-		assert.equal(result, 'works');
+		assert.strictEqual(result, 'works');
 	});
 
 	it('with `exts`', () => {
-		assert.throws(() => importFile('yaml', {
-			...options,
-			exts: ['.js'], // there is no `yaml.js`, so throws error.
-		}));
+		assert.throws(() =>
+			importFile('yaml', {
+				...options,
+				exts: ['.js'], // there is no `yaml.js`, so throws error.
+			}),
+		);
 	});
 
 	it('index.js', () => {
 		const result = importFile('index', {
 			cwd: join(__dirname, 'other'),
 		});
-		assert.equal(result, 'works');
+		assert.strictEqual(result, 'works');
 	});
-
 });
 
 describe('importFile.resolve()', () => {
 	it('resolved', () => {
 		const path = importFile.resolve('javascript', options);
-		assert.equal(basename(path, '.js'), 'javascript');
+		assert.strictEqual(basename(path, '.js'), 'javascript');
 	});
 
 	it('ENOENT', () => {
