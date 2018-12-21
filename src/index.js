@@ -1,8 +1,7 @@
-
 import interpret from 'interpret';
 import rechoir from 'rechoir';
 import findUp from 'find-up';
-import { resolve, extname } from 'path';
+import { resolve, extname, join, sep } from 'path';
 import requireReload from 'require-reload';
 
 const reload = requireReload(require);
@@ -20,31 +19,46 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 	const uniqueResolvers = Array.from(new Set([cwd, ...resolvers]));
 	const resolverPaths = uniqueResolvers.map((path) => resolve(cwd, path));
 
+	const safelyResolve = (path) => {
+		try {
+			return require.resolve(path);
+		}
+		catch (err) {
+			return false;
+		}
+	};
+
 	const requireResolve = (path) => {
-		try { return require.resolve(path, { paths: resolverPaths }); }
-		catch (err) { return false; }
+		if (resolvers.length) {
+			for (const resolver of resolvers) {
+				let joinedPath = join(resolver, path);
+				if (!joinedPath.startsWith(sep)) {
+					joinedPath = '.' + sep + joinedPath;
+				}
+				const res = safelyResolve(joinedPath);
+				if (res) return res;
+			}
+		}
+		return safelyResolve(path);
 	};
 
 	const resolved = requireResolve(filepath);
 
-	if (resolved) { return resolved; }
+	if (resolved) {
+		return resolved;
+	}
 
 	const paths = [];
 
 	if (useLoader) {
-		const sortedExts = Object
-			.keys(extensions)
+		const sortedExts = Object.keys(extensions)
 			.filter((ext) => !exts.length || exts.indexOf(ext) > -1)
 			.sort((a, b) =>
-				a === '.js' ? -1 : b === '.js' ? 1 : a.length - b.length
-			)
-		;
-
+				a === '.js' ? -1 : b === '.js' ? 1 : a.length - b.length,
+			);
 		const fileExt = extname(filepath);
 		const includesExt = () =>
-			sortedExts.reverse().some((ext) => filepath.endsWith(ext))
-		;
-
+			sortedExts.reverse().some((ext) => filepath.endsWith(ext));
 		if (fileExt && includesExt()) {
 			paths.push(filepath);
 		}
@@ -84,14 +98,14 @@ const resolveFile = function resolveFile(filepath, options = {}) {
 };
 
 const importFile = function importFile(filepath, options = {}) {
-	const {
-		useLoader = true,
-		useCache = true,
-		useESDefault = true,
-	} = options;
+	const { useLoader = true, useCache = true, useESDefault = true } = options;
 	const finalPath = resolveFile(filepath, options);
-	try { useLoader && rechoir.prepare(extensions, finalPath); }
-	catch (err) { /* noop */ }
+	try {
+		useLoader && rechoir.prepare(extensions, finalPath);
+	}
+	catch (err) {
+		/* noop */
+	}
 	const module = useCache ? require(finalPath) : reload(finalPath);
 	const shouldUseDefault = useESDefault && module.__esModule && module.default;
 	return shouldUseDefault ? module.default : module;

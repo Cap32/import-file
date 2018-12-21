@@ -87,6 +87,14 @@ describe('importFile()', () => {
 		assert.strictEqual(result, 'works, too');
 	});
 
+	it('with `resolvers` rather resolvers dir than node_modules dir', () => {
+		const result = importFile('./rimraf', {
+			...options,
+			resolvers: ['./other'],
+		});
+		assert.strictEqual(result, 'rimraf');
+	});
+
 	it('without `useCache`', () => {
 		const name = `${random()}.json`;
 		const content = 'cache';
